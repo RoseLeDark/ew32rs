@@ -1,6 +1,7 @@
-#include "ew32_device.h"
+#include "ew32_devm/ew32_device.h"
 #include "string.h"
 
+#include <ew32_base/ew32_logging.h>
 
 int32_t ew32_device_send(ew32_dev_t* device, void* data, int32_t size) {
     if(device == NULL) return -EW32_DEVICE_ERROR_NULL;
@@ -10,7 +11,7 @@ int32_t ew32_device_send(ew32_dev_t* device, void* data, int32_t size) {
     int32_t datasended = 0;
     uint8_t i = 0;
 
-    while(true) {
+    while(1) {
         if( i >= 3) break;
 
         datasended = device->write(device, data, size);
@@ -29,7 +30,7 @@ int32_t ew32_device_read(ew32_dev_t* device, void* data, int32_t size) {
     int32_t dataread = 0;
     uint8_t i = 0;
 
-    while(true) {
+    while(1) {
         if( i >= 3) break;
 
         dataread = device->read(device, data, size);
@@ -48,7 +49,7 @@ uint8_t ew32_device_pstate(ew32_dev_t* device, uint8_t state) {
     uint8_t i = 0;
     
 
-    while(true) {
+    while(1) {
         if( i >= 3) break;
         
         _ret = device->powerstate(device, state);
@@ -100,14 +101,14 @@ uint8_t ew32_device_get_userdata(ew32_dev_t* device, void** data) {
 
 uint8_t ew32_device_can_send(ew32_dev_t* device) {
     if(device == NULL) return EW32_DEVICE_ERROR_NULL;
-    return (device->type == EW32_DEVICE_TYPE_OUTPUT || device->type == EW32_DEVICE_TYPE_INOUT) ? 
+    return (device->rw == EW32_DEVICE_WRITE_ONLY || device->rw == EW32_DEVICE_READ_WRITE) ? 
         EW32_CONFIG_YES : EW32_CONFIG_NO;
 }
 
 
 uint8_t ew32_device_can_read(ew32_dev_t* device) {
     if(device == NULL) return EW32_DEVICE_ERROR_NULL;
-    return (device->type == EW32_DEVICE_TYPE_INPUT || device->type == EW32_DEVICE_TYPE_INOUT) ? 
+    return (device->rw == EW32_DEVICE_READ_ONLY || device->rw == EW32_DEVICE_READ_WRITE) ? 
         EW32_CONFIG_YES : EW32_CONFIG_NO;
 }
 

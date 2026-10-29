@@ -7,6 +7,8 @@
 
 #include "ew32_device.h"
 
+#include <stdio.h>
+
 /** @name I2C Bus Event Messages */
 /// @{
 #if EW32_DEVICE_USE_I2C_AUTOPROBE == 1
@@ -55,7 +57,7 @@ typedef struct ew32_i2c_io {
     uint8_t *reg_addr;          /**< Target register address pointer (used exclusively for read operations). */
     size_t reg_size;            /**< Size of the register address in bytes (used exclusively for read operations). */
     size_t msg_size;            /**< Size of the data message payload buffer. */
-    void* message;              /**< Pointer to the data payload buffer. */
+    uint8_t* message;              /**< Pointer to the data payload buffer. */
 } ew32_i2c_io_t;
 
 /// ========== WRITE STRUCT ==========
@@ -100,8 +102,16 @@ typedef struct ew32_i2c_registnewdev {
  */
 #if EW32_DEVICE_USE_I2C == 1
 uint8_t ew32_device_i2c_setup(uint8_t sda, uint8_t scl, uint8_t port_num, i2c_handler handler, ew32_dev_t** device);
+uint8_t ew32_device_i2c_isadress(uint8_t port_num, uint8_t address);
+
+int32_t ew32_device_i2c_write(uint8_t port_num,  ew32_i2c_io_t* data, int32_t size);
+int32_t ew32_device_i2c_read(uint8_t port_num,  ew32_i2c_io_t* data, int32_t size);
 #else
-#define ew32_device_i2c_setup(sda, scl, port_num, handler, device)
+#define ew32_device_i2c_setup(sda, scl, port_num, handler, device)                    
+#define ew32_device_i2c_isadress(port_num, address)                                 
+
+#define ew32_device_i2c_write(port_num,  data, size)                                
+#define ew32_device_i2c_read(port_num,   data, size)                                
 #endif 
 
 #ifdef __cplusplus
