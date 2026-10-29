@@ -1,3 +1,0 @@
-[submodule "ew32_devicemanager"]
-path = lib/ew32_devm
-url = https://github.com/RoseLeDark/ew32_devicemanager.git
