@@ -1,0 +1,1 @@
+# ew32_devicemanager
