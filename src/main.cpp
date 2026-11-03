@@ -107,7 +107,15 @@ uint8_t ew32_device_test0_setup(ew32_dev_t** device) {
 
 
 int8_t __logging_handler(uint8_t level, const char* tag, const char* text) {
-   Serial.printf("[%d:%s] %s", level, tag, text); return 0;
+
+    switch(level) {
+        case EW32_LOGGING_LEVEL_DEBUG: Serial.printf("[Debug:%s] %s", tag, text); break;
+        case EW32_LOGGING_LEVEL_INFO: Serial.printf("[Info:%s] %s", tag, text); break;
+        case EW32_LOGGING_LEVEL_WARNING: Serial.printf("[Warn:%s] %s", tag, text); break;
+        case EW32_LOGGING_LEVEL_ERROR: Serial.printf("[Error:%s] %s", tag, text); break;
+        case EW32_LOGGING_LEVEL_CRITICAL: Serial.printf("[Critical:%s] %s", tag, text); break;
+    };
+    return 0;
 }
 
 // example the baterry is by 20% then switch to EW32_POWERSTATE_L1. EW32_POWERSTATE_l5 is full powerstate
@@ -131,14 +139,17 @@ void setup() {
     
     ew32_dev_t* __test_device = (ew32_dev_t*)malloc(sizeof(ew32_dev_t));
 
-    xewLoggingSerial(EW32_LOGGING_LEVEL_INFO, "MAIN", "Initializing VFS...");
     if(ew32_vfs_init() != 0) {
         xewLoggingDebug("MAIN", "Initializing VFS ... [Error]\n");
+    } else {
+         xewLoggingDebug("MAIN", "Initializing VFS ... [OK]\n");
     }
 
     if(ew32_devicemanager_create() != 0) {
         xewLoggingDebug("MAIN", "Device Manager Create ... [Error]\n");
-    } 
+    }  else {
+        xewLoggingDebug("MAIN", "Device Manager Create ... [OK]\n");
+    }
    ew32_device_test0_setup(&__test_device);
    ew32_devicemanager_registdevice(__test_device, 0, 0);
 
@@ -149,9 +160,10 @@ void setup() {
     ew32_devicemanager_setup();
     if(ew32_devicemanager_run() != 0) {
       xewLoggingDebug("MAIN", "Device Manager run ... [Error]\n");
+    } else {
+        xewLoggingDebug("MAIN", "Device Manager run ... [OK]\n");
     }
 
-    xewLoggingSerial(EW32_LOGGING_LEVEL_INFO, "MAIN", "Dumping device manager state\n");
     ew32_devicemanager_dump(EW32_DEVICEMANAGER_STATE_RUNNING);
     
     
