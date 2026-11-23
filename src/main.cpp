@@ -1,12 +1,20 @@
 
 #include "ew32_devm/devmanager.h"
 
+char* xewLoggingLevelToString(uint8_t level) {
+    if(level == EW32_LOGGING_LEVEL_DEBUG )   { return "Debug"; }
+    if(level == EW32_LOGGING_LEVEL_INFO )   { return "Info"; }     
+    if(level == EW32_LOGGING_LEVEL_WARNING )   { return "Warn"; }
+    if(level == EW32_LOGGING_LEVEL_ERROR )   { return "Error"; }
+    return "Critical"; 
+}
+
 int8_t __logging_handler(uint8_t level, const char* tag, const char* text) {
 
 #if EW32_DEVICE_USE_UART == EW32_CONFIG_YES
     char buf[256];
 
-    sprintf(buf, "[%d:%s] %s", level, tag, text);
+    sprintf(buf, "[%s:%s] %s", xewLoggingLevelToString(level), tag, text);
     ew32_device_uart_send(EW32_DEVICE_UART_STDPORT, buf, strlen(buf));
 #endif
 
